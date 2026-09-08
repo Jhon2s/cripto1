@@ -1,5 +1,5 @@
 import tkinter as tk
-# PARTE 1: LÓGICA DEL CIFRADO (Totalmente separada)
+# LÓGICA DEL CIFRADO (Totalmente separada)
 def cifrado_cesar(texto, n_posiciones):
     """Función exclusiva para CIFRAR texto desplazando 'n' posiciones"""
     resultado = ""
@@ -14,35 +14,41 @@ def cifrado_cesar(texto, n_posiciones):
             # Los espacios y números se quedan igual
             resultado += char
     return resultado
-#INTERFAZ GRÁFICA (Diseño moderno aplicado)
+# LÓGICA PARA DESCIFRAR
+def descifrado_cesar(texto, n_posiciones):
+    """Función exclusiva para DESCIFRAR texto"""
+    return cifrado_cesar(texto, -n_posiciones)
+#INTERFAZ GRÁFICA 
 class InterfazCesarSoloCifrar:
     def __init__(self, ventana):
         self.ventana = ventana
         self.ventana.title("Cifrado César (Posiciones n)")
         self.ventana.geometry("650x550") # Ajusté un poco el alto para el selector
         self.ventana.config(bg="#f0f4f8") # Fondo azul muy clarito
-        
+
         # Contenedor principal (Tarjeta blanca del diseño)
         main_frame = tk.Frame(ventana, bg="white")
         main_frame.pack(expand=True, fill="both", padx=30, pady=30)
-        
+
         # Título
         title_label = tk.Label(main_frame, text="CIFRADO CÉSAR CON POSICION", 
                                font=("Helvetica", 20, "bold"), bg="white", fg="#0d3b66")
         title_label.pack(pady=(20, 10))
-        
+
         # Selector de posiciones 'n' (Inicia en 3) adaptado al diseño
         frame_posiciones = tk.Frame(main_frame, bg="white")
         frame_posiciones.pack(pady=5)
         
         tk.Label(frame_posiciones, text="Posiciones a desplazar (n):", font=("Helvetica", 11, "bold"), 
                  bg="white", fg="#0d3b66").pack(side=tk.LEFT, padx=5)
-        
+
         self.var_n = tk.IntVar(value=3) # Posición 3 por defecto
+
         self.selector_n = tk.Spinbox(frame_posiciones, from_=1, to=100, textvariable=self.var_n, 
                                      width=5, font=("Arial", 12), justify="center", relief="solid", bd=1)
+
         self.selector_n.pack(side=tk.LEFT, padx=5)
-        
+
         # Etiqueta "Texto plano:"
         tk.Label(main_frame, text="Texto plano:", font=("Helvetica", 11, "bold"), 
                  bg="white", fg="#0d3b66").pack(pady=(15, 5))
@@ -56,11 +62,22 @@ class InterfazCesarSoloCifrar:
         button_frame.pack(pady=15)
         
         # Botón CIFRAR (Azul)
-        self.btn_cifrar = tk.Button(button_frame, text="🔒 CIFRAR", font=("Helvetica", 10, "bold"), 
+        self.btn_cifrar = tk.Button(button_frame, text=" CIFRAR", font=("Helvetica", 10, "bold"), 
                                     bg="#1976D2", fg="white", width=15, cursor="hand2", relief="flat",
                                     command=self.accion_cifrar)
         self.btn_cifrar.pack(side=tk.LEFT, padx=10, ipady=5)
-        
+
+
+        # ====================================================
+        # NUEVO: BOTÓN DESCIFRAR
+        # ====================================================
+
+        self.btn_descifrar = tk.Button(button_frame, text="DESCIFRAR", font=("Helvetica", 10, "bold"), 
+                                       bg="#388E3C", fg="white", width=15, cursor="hand2", relief="flat",
+                                       command=self.accion_descifrar)
+        self.btn_descifrar.pack(side=tk.LEFT, padx=10, ipady=5)
+
+
         # Botón LIMPIAR (Gris) - Añadido para mantener tu diseño original
         self.btn_limpiar = tk.Button(button_frame, text="LIMPIAR", font=("Helvetica", 10, "bold"), 
                                      bg="#e0e6ed", fg="#0d3b66", width=15, cursor="hand2", relief="flat",
@@ -98,26 +115,47 @@ class InterfazCesarSoloCifrar:
 
     # Acción del botón Cifrar
     def accion_cifrar(self):
-        # 1. Obtener el texto y el número 'n'
+        #Obtener el texto y el número 'n'
         texto = self.entrada_texto.get().strip()
-        
+
         if not texto:
             self.mostrar_placeholder()
             return
-            
+
         n = self.var_n.get()
-        
-        # 2. Llamar a la lógica matemática separada
+
+        #Llamar a la lógica matemática separada
         resultado = cifrado_cesar(texto, n)
         
-        # 3. Mostrar el resultado en pantalla
+        #Mostrar el resultado en pantalla
         self.salida_texto.config(state=tk.NORMAL)
         self.salida_texto.delete("1.0", tk.END)
         self.salida_texto.insert(tk.END, f"\n\n{resultado}") # Centrado vertical simple
         self.salida_texto.tag_add("centro", "1.0", "end")
         self.salida_texto.config(fg="black") # Texto a negro para lectura
         self.salida_texto.config(state=tk.DISABLED)
-# PARTE 3: EJECUCIÓN DEL PROGRAMA
+    # NUEVO: ACCIÓN DEL BOTÓN DESCIFRAR
+    def accion_descifrar(self):
+        # Obtener el resultado cifrado
+        texto = self.salida_texto.get("1.0", tk.END).strip()
+
+        # Si no hay resultado, no hacer nada
+        if not texto or texto == "El cifrado aparecerá aquí":
+            return
+
+        n = self.var_n.get()
+
+        # Descifrar el resultado
+        resultado = descifrado_cesar(texto, n)
+
+        # Mostrar el texto descifrado
+        self.salida_texto.config(state=tk.NORMAL)
+        self.salida_texto.delete("1.0", tk.END)
+        self.salida_texto.insert(tk.END, f"\n\n{resultado}")
+        self.salida_texto.tag_add("centro", "1.0", "end")
+        self.salida_texto.config(fg="black")
+        self.salida_texto.config(state=tk.DISABLED)
+#EJECUCIÓN DEL PROGRAMA
 if __name__ == "__main__":
     root = tk.Tk()
     app = InterfazCesarSoloCifrar(root)

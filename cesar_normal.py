@@ -14,7 +14,24 @@ def cifrado_cesar_fijo(texto):
             # Los espacios y símbolos se quedan igual
             resultado += char
     return resultado
-# PARTE 2: INTERFAZ GRÁFICA (Diseño de la imagen aplicad
+
+def descifrado_cesar_fijo(texto):
+    """Función para DESCIFRAR texto con un desplazamiento fijo de 3 posiciones"""
+    posiciones = 3
+    resultado = ""
+    for char in texto:
+        if char.isalpha():
+            # Identificamos si es mayúscula o minúscula
+            base = ord('A') if char.isupper() else ord('a')
+            # Aplicamos la fórmula inversa del cifrado César (-3)
+            nuevo_char = chr((ord(char) - base - posiciones) % 26 + base)
+            resultado += nuevo_char
+        else:
+            # Los espacios y símbolos se quedan igual
+            resultado += char
+    return resultado
+
+# INTERFAZ GRÁFICA 
 class InterfazCesarSimple:
     def __init__(self, ventana):
         self.ventana = ventana
@@ -44,10 +61,16 @@ class InterfazCesarSimple:
         button_frame.pack(pady=15)
         
         # Botón CIFRAR (Azul)
-        self.btn_cifrar = tk.Button(button_frame, text="🔒 CIFRAR", font=("Helvetica", 10, "bold"), 
+        self.btn_cifrar = tk.Button(button_frame, text="CIFRAR", font=("Helvetica", 10, "bold"), 
                                     bg="#1976D2", fg="white", width=15, cursor="hand2", relief="flat",
                                     command=self.accion_cifrar)
         self.btn_cifrar.pack(side=tk.LEFT, padx=10, ipady=5)
+        
+        # Botón DESCIFRAR (Verde)
+        self.btn_descifrar = tk.Button(button_frame, text="DESCIFRAR", font=("Helvetica", 10, "bold"),
+                                       bg="#2e7d32", fg="white", width=15, cursor="hand2", relief="flat",
+                                       command=self.accion_descifrar)
+        self.btn_descifrar.pack(side=tk.LEFT, padx=10, ipady=5)
         
         # Botón LIMPIAR (Gris)
         self.btn_limpiar = tk.Button(button_frame, text="LIMPIAR", font=("Helvetica", 10, "bold"), 
@@ -74,7 +97,7 @@ class InterfazCesarSimple:
         self.salida_texto.config(state=tk.NORMAL)
         self.salida_texto.delete("1.0", tk.END)
         # Agregamos saltos de línea para centrarlo verticalmente de forma sencilla
-        self.salida_texto.insert(tk.END, "\n\nEl cifrado aparecerá aquí")
+        self.salida_texto.insert(tk.END, "\n\nEl cifrado ")
         self.salida_texto.tag_add("centro", "1.0", "end")
         self.salida_texto.config(fg="#9ba4b5") # Color gris claro
         self.salida_texto.config(state=tk.DISABLED)
@@ -84,23 +107,43 @@ class InterfazCesarSimple:
         self.mostrar_placeholder()
 
     def accion_cifrar(self):
-        # 1. Obtener el texto introducido
+        #Obtener el texto introducido
         texto = self.entrada_texto.get().strip()
         
         if not texto:
             self.mostrar_placeholder()
             return
             
-        # 2. Llamar a la lógica matemática
+        #Llamar a la lógica matemática
         resultado = cifrado_cesar_fijo(texto)
         
-        # 3. Mostrar el resultado en pantalla
+        #Mostrar el resultado en pantalla
         self.salida_texto.config(state=tk.NORMAL)
         self.salida_texto.delete("1.0", tk.END)
         self.salida_texto.insert(tk.END, f"\n\n{resultado}") # Centrado vertical simple
         self.salida_texto.tag_add("centro", "1.0", "end")
         self.salida_texto.config(fg="black") # Cambiar el texto a negro para que se lea bien
         self.salida_texto.config(state=tk.DISABLED)
+
+    def accion_descifrar(self):
+        #Obtener el texto introducido (se asume que está cifrado)
+        texto = self.entrada_texto.get().strip()
+        
+        if not texto:
+            self.mostrar_placeholder()
+            return
+            
+        #Llamar a la lógica matemática inversa
+        resultado = descifrado_cesar_fijo(texto)
+        
+        #Mostrar el resultado en pantalla
+        self.salida_texto.config(state=tk.NORMAL)
+        self.salida_texto.delete("1.0", tk.END)
+        self.salida_texto.insert(tk.END, f"\n\n{resultado}") # Centrado vertical simple
+        self.salida_texto.tag_add("centro", "1.0", "end")
+        self.salida_texto.config(fg="black") # Cambiar el texto a negro para que se lea bien
+        self.salida_texto.config(state=tk.DISABLED)
+
 # EJECUCIÓN DEL PROGRAMA
 if __name__ == "__main__":
     root = tk.Tk()
