@@ -1,45 +1,32 @@
 import tkinter as tk
 def cifrado_cesar_fijo(texto):
-    """Función para CIFRAR texto con un desplazamiento fijo de 3 posiciones"""
     posiciones = 3
     resultado = ""
     for char in texto:
         if char.isalpha():
-            # Identificamos si es mayúscula o minúscula
             base = ord('A') if char.isupper() else ord('a')
-            # Aplicamos la fórmula del cifrado César con la posición fija (+3)
             nuevo_char = chr((ord(char) - base + posiciones) % 26 + base)
             resultado += nuevo_char
         else:
-            # Los espacios y símbolos se quedan igual
             resultado += char
     return resultado
-
 def descifrado_cesar_fijo(texto):
-    """Función para DESCIFRAR texto con un desplazamiento fijo de 3 posiciones"""
     posiciones = 3
     resultado = ""
     for char in texto:
         if char.isalpha():
-            # Identificamos si es mayúscula o minúscula
             base = ord('A') if char.isupper() else ord('a')
-            # Aplicamos la fórmula inversa del cifrado César (-3)
             nuevo_char = chr((ord(char) - base - posiciones) % 26 + base)
             resultado += nuevo_char
         else:
-            # Los espacios y símbolos se quedan igual
             resultado += char
     return resultado
-
-# INTERFAZ GRÁFICA 
 class InterfazCesarSimple:
     def __init__(self, ventana):
         self.ventana = ventana
         self.ventana.title("Cifrado César")
         self.ventana.geometry("650x500")
-        self.ventana.config(bg="#f0f4f8") # Fondo azul muy clarito
-        
-        # Contenedor principal (Tarjeta blanca del diseño)
+        self.ventana.config(bg="#f0f4f8") 
         main_frame = tk.Frame(ventana, bg="white")
         main_frame.pack(expand=True, fill="both", padx=30, pady=30)
         
